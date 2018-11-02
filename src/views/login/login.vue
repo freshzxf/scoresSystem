@@ -22,15 +22,16 @@
 
         <mu-button flat round color="primary" to="/reg">
           <mu-icon value="edit" size="16" class="mr-10"></mu-icon>
-          没有账号，赶紧注册</mu-button>
+          没有账号，赶紧注册
+        </mu-button>
 
         <mu-button full-width
                    round
                    color="primary"
                    @click="submit">
           <mu-icon value="lock" size="16" class="mr-10"></mu-icon>
-          安全登录</mu-button>
-
+          安全登录
+        </mu-button>
         <!--<mu-form-item>
           <mu-button color="primary" @click="submit">提交</mu-button>
           <mu-button @click="clear">重置</mu-button>
@@ -42,7 +43,7 @@
 </template>
 <script>
   export default {
-    data () {
+    data() {
       return {
         usernameRules: [
           {validate: (val) => !!val, message: '必须填写用户名'},
@@ -61,19 +62,22 @@
       }
     },
     methods: {
-      submit () {
+      submit() {
         this.$refs.form.validate().then((result) => {
-          console.log('form valid: ', result);
-          if(result){
+          if (result) {
             const loading = this.$loading();
-            var timer = setTimeout(() => {
-              this.$router.push({path: '/index'})
+            this.$store.dispatch('login').then((data) => {
+              this.$util.setStorage('token', data.token);
+              this.$router.push({path: '/index'});
               loading.close();
-            },2000)
+              // todo: 登录成功后同步设置登录状态共享值为true
+              this.$store.commit('LOGIN_IN',{});
+              console.log(this.$store.state.base.login);
+            });
           }
         })
       },
-      clear () {
+      clear() {
         this.$refs.form.clear()
         this.validateForm = {
           username: '',

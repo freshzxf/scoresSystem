@@ -1,6 +1,6 @@
 <template>
   <div>
-    <mu-paper :z-depth="1" class="demo-loadmore-wrap">
+    <mu-paper class="demo-loadmore-wrap">
 
       <mu-appbar color="primary">
 
@@ -18,7 +18,7 @@
 
       </mu-appbar>
 
-      <mu-container ref="container" class="">
+      <mu-container ref="container" class="pl-0 pr-0">
         <mu-load-more @refresh="refresh" :refreshing="refreshing" :loading="loading" @load="load">
           <mu-list>
             <template v-for="(item) in records">
@@ -26,7 +26,8 @@
 
                 <mu-list-item-content>
                   <mu-list-item-title v-if="item.change>0">{{ item.change }} 分</mu-list-item-title>
-                  <mu-list-item-title v-else="item.change>0" :style="{color: redColor}">{{ item.change }} 分</mu-list-item-title>
+                  <mu-list-item-title v-else="item.change>0" :style="{color: redColor}">{{ item.change }} 分
+                  </mu-list-item-title>
                   <mu-list-item-sub-title>{{ item.time }}</mu-list-item-sub-title>
                 </mu-list-item-content>
 
@@ -47,7 +48,7 @@
           <template v-for="(item) in ranks">
             <mu-list-item>
 
-              <mu-list-item-action :style="{color: redColor}">
+              <mu-list-item-action :style="{color: redColor,'min-width': '28px'}">
                 {{ item.rank }}
               </mu-list-item-action>
 
@@ -75,7 +76,7 @@
 </template>
 <script>
   export default {
-    data () {
+    data() {
       return {
         redColor: '#f44336',
         records: [
@@ -132,7 +133,7 @@
       }
     },
     methods: {
-      refresh () {
+      refresh() {
         this.refreshing = true
         this.$refs.container.scrollTop = 0
         setTimeout(() => {
@@ -141,7 +142,7 @@
           this.num = 10
         }, 2000)
       },
-      load () {
+      load() {
         this.loading = true
         setTimeout(() => {
           this.loading = false

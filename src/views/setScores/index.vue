@@ -1,35 +1,87 @@
+<style scoped>
+  .search {
+    width: 140px;
+    margin: -4px!important;
+    padding-top: 12px!important;
+    padding-bottom: 12px!important;
+    -webkit-transition: all 500ms;
+    -moz-transition: all 500ms;
+    -ms-transition: all 500ms;
+    -o-transition: all 500ms;
+    transition: all 500ms;
+  }
+
+  /*使用样式穿透写法突破scoped限制，在less、sass中使用/deep/*/
+  >>> .mu-input.is-solo .mu-input-icon{
+    top: 16px;
+  }
+
+  .focus {
+    background: hsla(0, 0%, 100%, .15);
+    width: 190px;
+  }
+</style>
 <template>
   <div>
-    <mu-paper :z-depth="1" class="demo-loadmore-wrap">
+    <mu-paper class="demo-loadmore-wrap">
 
       <mu-appbar color="primary">
 
+        <mu-button icon slot="left">
+          <mu-icon value="reply"></mu-icon>
+        </mu-button>
+        Scores
         <!--@change="filterName"-->
-        <mu-text-field v-model="name" placeholder="姓名搜索" icon="person" ref="nameIpt"></mu-text-field>
+        <mu-text-field ref="searchIpt"
+                       :solo="true"
+                       placeholder="姓名搜索"
+                       slot="right"
+                       v-model="searchName"
+                       icon="search"
+                       :action-icon="focus ? 'clear': ''"
+                       :action-click="()=>{searchName = ''}"
+                       color="white"
+                       class="search"
+                       :class="{'focus': focus}"
+                       @focus="focus = !focus"
+                       @blur="focus = !focus"
+                       @compositionstart.native="iptEnd = !1"
+                       @compositionend.native="iptEnd = !0">
+        </mu-text-field>
 
       </mu-appbar>
 
-      <mu-container ref="container" class="">
+      <mu-container ref="container" class="pl-0 pr-0">
         <mu-load-more @refresh="refresh" :refreshing="refreshing" :loading="loading" @load="load">
           <mu-list>
-            <template v-for="(item) in copyRanks">
-              <mu-list-item>
-
-                <mu-list-item-action :style="{color: redColor}">
+            <template v-for="(item,index) in copyRanks">
+              <mu-list-item :key="item.id" class="pl-0 pr-0">
+                <!--排名-->
+                <mu-list-item-action :style="{'min-width': '28px'}">
                   {{ item.rank }}
                 </mu-list-item-action>
-
+                <!--姓名积分-->
                 <mu-list-item-content>
-                  <mu-chip class="" color="green" slot="left">
+                  <mu-chip color="success" slot="left" class="mt-5">
                     <mu-avatar :size="32">
                       <img src="/static/img/avatar.jpg">
                     </mu-avatar>
-                    {{item.name}}
+                    {{item.name}} / {{ item.total }} 分
                   </mu-chip>
                 </mu-list-item-content>
-
+                <!--<p class="mr-10" v-if="item.change"><span>{{item.reason}}</span>： {{item.change}}</p>-->
+                <!--操作栏-->
                 <mu-list-item-action>
-                  {{ item.total }} 分
+                  <mu-chip :color="item.change < 0 ? 'red' : 'primary'" class="pr-0">
+                    <span class="pr-50" v-if="item.change">{{item.reasonText}} {{item.change}}</span>
+                    <mu-avatar :size="32" class="mr-0">
+                      <mu-button :color="item.change < 0 ? 'red' : ''" fab small @click="edit(item.id, index)"
+                                 style="width: 32px;height: 32px;box-shadow: none;border: 0">
+                        <mu-icon value="edit"></mu-icon>
+                      </mu-button>
+                    </mu-avatar>
+                  </mu-chip>
+
                 </mu-list-item-action>
 
               </mu-list-item>
@@ -37,6 +89,25 @@
             </template>
           </mu-list>
         </mu-load-more>
+
+        <!--编辑弹窗-->
+        <mu-dialog :title="currentName" scrollable :open.sync="editDialog">
+
+          <div class="select-control-group">
+            <!--<mu-select label="Reason" filterable v-model="radio.value" full-width>
+              <mu-option v-for="(item, index) in radio.arr" :key="index" :label="item.label" :value="item.value"></mu-option>
+            </mu-select>-->
+            <div class="select-control-row" :key="index" v-for="(item, index) in radio">
+              <mu-radio :value="item.value" v-model="currentReason" :label="item.label"></mu-radio>
+            </div>
+            <mu-text-field class="mb-0" label="Change" full-width type="number" v-model="currentChange"></mu-text-field>
+          </div>
+
+          <mu-button slot="actions" fullWidth color="primary"
+                     @click="submit(currentIndex, currentReason, currentChange)">确认提交
+          </mu-button>
+        </mu-dialog>
+
       </mu-container>
 
     </mu-paper>
@@ -44,64 +115,90 @@
 </template>
 <script>
   export default {
-    data () {
+    data() {
       return {
-        name: '',
-        redColor: '#f44336',
+        searchName: '', // 搜索名字
+        iptEnd: false, // 是否输入完毕（为了适应中文输入法）
+        focus: false, // 搜索框的聚焦状态
+
+        currentIndex: '', // 当前编辑索引
+        currentName: '', // 当前编辑用户名
+        currentReason: '', // 当前编辑事由
+        currentChange: '', // 当前编辑数量
+
         ranks: [
-          {name: 'freshzxf', rank: 1, total: 3455},
-          {name: 'littlefish', rank: 2, total: 2876},
-          {name: 'littlefish', rank: 3, total: 2876},
-          {name: 'littlefish', rank: 4, total: 2876},
-          {name: 'littlefish', rank: 5, total: 2876},
-          {name: 'littlefish', rank: 6, total: 2876},
-          {name: 'littlefish', rank: 7, total: 2876},
-          {name: 'littlefish', rank: 8, total: 2876},
-          {name: 'littlefish', rank: 9, total: 2876},
-          {name: 'littlefish', rank: 10, total: 2876},
-          {name: 'littlefish', rank: 11, total: 2876},
-          {name: 'littlefish', rank: 12, total: 2876},
-          {name: 'littlefish', rank: 13, total: 2876},
-          {name: 'littlefish', rank: 14, total: 2876},
-          {name: 'littlefish', rank: 15, total: 2876},
-          {name: 'littlefish', rank: 16, total: 2876},
-          {name: 'littlefish', rank: 17, total: 2876},
-          {name: 'littlefish', rank: 18, total: 2876},
-          {name: 'littlefish', rank: 19, total: 2876},
-          {name: 'littlefish', rank: 20, total: 2876}
-        ],
+          {id: 1, name: 'freshzxf', rank: 1, total: 3455},
+          {id: 2, name: 'littlefish', rank: 2, total: 2876},
+          {id: 3, name: 'littlefish', rank: 3, total: 2876},
+          {id: 4, name: 'littlefish', rank: 4, total: 2876},
+          {id: 5, name: 'littlefish', rank: 5, total: 2876},
+          {id: 6, name: 'littlefish', rank: 6, total: 2876},
+          {id: 7, name: 'littlefish', rank: 7, total: 2876},
+          {id: 8, name: 'littlefish', rank: 8, total: 2876},
+          {id: 9, name: 'littlefish', rank: 9, total: 2876},
+          {id: 10, name: 'littlefish', rank: 10, total: 2876},
+          {id: 11, name: 'littlefish', rank: 11, total: 2876},
+          {id: 12, name: 'littlefish', rank: 12, total: 2876},
+          {id: 13, name: 'littlefish', rank: 13, total: 2876},
+          {id: 14, name: 'littlefish', rank: 14, total: 2876},
+          {id: 15, name: 'littlefish', rank: 15, total: 2876},
+          {id: 16, name: 'littlefish', rank: 16, total: 2876},
+          {id: 17, name: 'littlefish', rank: 17, total: 2876},
+          {id: 18, name: 'littlefish', rank: 18, total: 2876},
+          {id: 19, name: 'littlefish', rank: 19, total: 2876},
+          {id: 20, name: 'littlefish', rank: 20, total: 2876}
+        ], // 原始总列表数据，供搜索时候从总数据中搜索
         copyRanks: [
-          {name: 'freshzxf', rank: 1, total: 3455},
-          {name: 'littlefish', rank: 2, total: 2876},
-          {name: 'littlefish', rank: 3, total: 2876},
-          {name: 'littlefish', rank: 4, total: 2876},
-          {name: 'littlefish', rank: 5, total: 2876},
-          {name: 'littlefish', rank: 6, total: 2876},
-          {name: 'littlefish', rank: 7, total: 2876},
-          {name: 'littlefish', rank: 8, total: 2876},
-          {name: 'littlefish', rank: 9, total: 2876},
-          {name: 'littlefish', rank: 10, total: 2876},
-          {name: 'littlefish', rank: 11, total: 2876},
-          {name: 'littlefish', rank: 12, total: 2876},
-          {name: 'littlefish', rank: 13, total: 2876},
-          {name: 'littlefish', rank: 14, total: 2876},
-          {name: 'littlefish', rank: 15, total: 2876},
-          {name: 'littlefish', rank: 16, total: 2876},
-          {name: 'littlefish', rank: 17, total: 2876},
-          {name: 'littlefish', rank: 18, total: 2876},
-          {name: 'littlefish', rank: 19, total: 2876},
-          {name: 'littlefish', rank: 20, total: 2876}
-        ],
+          {id: 1, name: 'freshzxf', rank: 1, total: 3455},
+          {id: 2, name: 'littlefish', rank: 2, total: 2876},
+          {id: 3, name: 'littlefish', rank: 3, total: 2876},
+          {id: 4, name: 'littlefish', rank: 4, total: 2876},
+          {id: 5, name: 'littlefish', rank: 5, total: 2876},
+          {id: 6, name: 'littlefish', rank: 6, total: 2876},
+          {id: 7, name: 'littlefish', rank: 7, total: 2876},
+          {id: 8, name: 'littlefish', rank: 8, total: 2876},
+          {id: 9, name: 'littlefish', rank: 9, total: 2876},
+          {id: 10, name: 'littlefish', rank: 10, total: 2876},
+          {id: 11, name: 'littlefish', rank: 11, total: 2876},
+          {id: 12, name: 'littlefish', rank: 12, total: 2876},
+          {id: 13, name: 'littlefish', rank: 13, total: 2876},
+          {id: 14, name: 'littlefish', rank: 14, total: 2876},
+          {id: 15, name: 'littlefish', rank: 15, total: 2876},
+          {id: 16, name: 'littlefish', rank: 16, total: 2876},
+          {id: 17, name: 'littlefish', rank: 17, total: 2876},
+          {id: 18, name: 'littlefish', rank: 18, total: 2876},
+          {id: 19, name: 'littlefish', rank: 19, total: 2876},
+          {id: 20, name: 'littlefish', rank: 20, total: 2876}
+        ], // 列表数据副本，渲染列表用的是此数据，编辑后也是修改此数据（每项数据新增reason，reasonText，change）
+
         refreshing: false,
         open: false,
-        docked: false,
-        open: false,
-        position: 'right',
-        loading: false
+        loading: false,
+
+        editDialog: false, // 编辑的弹层显隐
+        radio: [{
+          'label': '天地',
+          'value': 1,
+        }, {
+          'label': '玄黄',
+          'value': 2,
+        }, {
+          'label': '布谷',
+          'value': 3,
+        }], // 标签加对应值
+      }
+    },
+    watch: {
+      searchName: function (val) {
+        // 每次都是从全局数据中搜索
+        this.copyRanks = this.ranks;
+        this.copyRanks = this.copyRanks.filter((item) => {
+          return item.name.indexOf(val.replace(/(^\s*)|(\s*$)/g, '')) !== -1;
+        })
       }
     },
     methods: {
-      refresh () {
+      refresh() {
         this.refreshing = true
         this.$refs.container.scrollTop = 0
         setTimeout(() => {
@@ -110,30 +207,37 @@
           this.num = 10
         }, 2000)
       },
-      load () {
+      load() {
         this.loading = true
         setTimeout(() => {
           this.loading = false
-          this.num += 10
         }, 2000)
       },
-      watch: {
-        name: {
-          handler: function() {
-            console.log(this.$refs.nameIpt.value);
-          },
-          deep: true
-        }
+      edit(id, index) {
+        // 设置当前编辑的用户名
+        this.currentName = this.copyRanks[index].name;
+        // 设置当前编辑的用户所在索引值
+        this.currentIndex = index;
+        this.copyRanks[index].reason ? this.currentReason = this.copyRanks[index].reason : this.currentReason = '';
+        this.copyRanks[index].change ? this.currentChange = this.copyRanks[index].change : this.currentChange = '';
+        // 切换显示隐藏弹层
+        this.editDialog = !this.editDialog;
       },
-      /*filterName (val,v) {
-        this.copyRanks = this.ranks;
-        this.copyRanks = this.copyRanks.filter((item) => {
-          console.log(val)
-          console.log(v)
-          console.log(item.name)
-          return item.name.indexOf(val) !== -1;
-        })
-      }*/
+      submit(index, reason, change) {
+        if (reason && change) {
+          var reasonText = this.radio.filter(function (item) {
+              return item.value === reason
+            })[0].label + "：",
+            newTotal = +this.copyRanks[index].total + (+change);
+          this.$set(this.copyRanks[index], "reason", reason); // 设置当前编辑项事由id（作用是动态更改选中的事由radio）
+          this.$set(this.copyRanks[index], "reasonText", reasonText); // 设置当前编辑项事由文本（用户所见）
+          this.$set(this.copyRanks[index], "change", change); // 设置当前编辑项变动值
+          this.$set(this.copyRanks[index], "total", newTotal); // 设置当前编辑项总值
+          this.editDialog = !this.editDialog;
+        } else {
+          console.log('表单验证失败');
+        }
+      }
     }
   }
 </script>

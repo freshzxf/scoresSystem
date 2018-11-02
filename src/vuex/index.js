@@ -65,7 +65,7 @@
  *    }
  *  }
  * })
- * 也可以通过this.$store.dispathc('increment')执行action，注意此执行action部分模块，他会执行所有store中的名称为increment的mutaion
+ * 也可以通过this.$store.dispatch('increment')执行action，注意此执行action部分模块，他会执行所有store中的名称为increment的mutaion
  */
 
 import Vue from 'vue'
@@ -74,7 +74,6 @@ import Vuex from 'vuex'
 // var Vuex = require('../../node_modules/vuex/dist/vuex.min.js')
 
 import base from './base/base'
-import orders from './orders/orders'
 import uploader from './uploader/uploader'
 
 Vue.use(Vuex)
@@ -82,7 +81,6 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   modules: {
     base,
-    orders,
     uploader
   }
 })

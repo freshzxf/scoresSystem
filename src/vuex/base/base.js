@@ -1,9 +1,10 @@
 import * as types from '../mutation-types'
+import Api from '@/api/index'
 
 // 公共loading基础效果
 const state = {
   loading: false,
-  isPc: !/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)
+  login: false
 }
 
 const getters = {
@@ -11,6 +12,9 @@ const getters = {
 }
 
 const mutations = {
+  [types.LOGIN_IN](state, payload) {
+    state.login = payload.status
+  },
   [types.SHOW_LOADING](state, payload) {
     state.loading = payload.status
   },
@@ -20,6 +24,11 @@ const mutations = {
 }
 
 const actions = {
+  login({commit, state}) {
+    return Api.postLogin().then((data) => {
+      return data;
+    })
+  },
   showLoading({commit, state}) {
     commit({
       type: types.SHOW_LOADING,

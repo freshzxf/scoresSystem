@@ -9,6 +9,8 @@ import './styles/common.less'
 import 'muse-ui/dist/muse-ui.css';
 import 'muse-ui/lib/styles/base.less';
 import 'muse-ui-loading/dist/muse-ui-loading.css'; // load css
+import 'muse-ui-message/dist/muse-ui-message.css'; // message css
+import Message from 'muse-ui-message';
 import Loading from 'muse-ui-loading';
 
 import {
@@ -108,24 +110,32 @@ Vue.use(Tooltip);
 theme.use('teal');*/
 
 Vue.use(Loading);
+Vue.use(Message);
 
 Vue.use(VueRouter);
+// 全局挂载工具库
+Vue.prototype.$util = Util;
 
 // 路由配置
 const RouterConfig = {
   mode: 'history',
   routes: Routers
 }
-const router = new VueRouter(RouterConfig)
+const router = new VueRouter(RouterConfig);
 
+
+// 路由生命周期(拦截)
 router.beforeEach((to, from, next) => {
-  Util.title(to.meta.title)
-  next()
-})
-
+  if (Util.getStorage('token')) {
+    to.path === '/login' ? next('/') : '';
+    next();
+  } else {
+    to.path === '/login' ? next() : next('/login');
+  }
+});
 router.afterEach((to, from, next) => {
   window.scrollTo(0, 0)
-})
+});
 
 /* eslint-disable no-new */
 new Vue({
@@ -133,4 +143,4 @@ new Vue({
   router,
   store,
   render: h => h(App)
-})
+});

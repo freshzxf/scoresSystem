@@ -37,7 +37,7 @@ import qs from 'qs'
 export const commonParams = {}
 
 const instance = axios.create({
-  baseURL: 'http://yapi.demo.qunar.com/mock/14630',
+  baseURL: ' https://www.easy-mock.com/mock/5bdc08e29a50c07625face51/scoresSystem',
   timeout: 20000,
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded',

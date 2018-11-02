@@ -1,7 +1,7 @@
 const title = '积分管理系统'
 const routers = [
   {
-    path: '/',
+    path: '/login',
     name: 'login',
     meta: {
       title: title + '--登录'
@@ -17,8 +17,9 @@ const routers = [
     component: (resolve) => require(['./views/login/reg.vue'], resolve)
   },
   {
-    path: '/index',
+    path: '/',
     name: 'index',
+    alias: '/index', // 别名
     meta: {
       title: title + '--首页'
     },
