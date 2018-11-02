@@ -25,6 +25,14 @@ const routers = [
     component: (resolve) => require(['./views/index/index.vue'], resolve)
   },
   {
+    path: '/set_scores',
+    name: 'set_scores',
+    meta: {
+      title: title + '--查询设置'
+    },
+    component: (resolve) => require(['./views/setScores/index.vue'], resolve)
+  },
+  {
     path: '*',
     meta: {
       title: '访问出错啦'
