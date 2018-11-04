@@ -74,13 +74,15 @@ import Vuex from 'vuex'
 // var Vuex = require('../../node_modules/vuex/dist/vuex.min.js')
 
 import base from './base/base'
-import uploader from './uploader/uploader'
+import self from './self/self'
+import common from './common/common'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
     base,
-    uploader
+    self,
+    common
   }
 })

@@ -130,7 +130,7 @@ router.beforeEach((to, from, next) => {
     to.path === '/login' ? next('/') : '';
     next();
   } else {
-    to.path === '/login' ? next() : next('/login');
+    to.path === '/login' || to.path === '/reg' ? next() : next('/login');
   }
 });
 router.afterEach((to, from, next) => {

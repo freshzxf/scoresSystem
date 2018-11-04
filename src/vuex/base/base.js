@@ -1,5 +1,6 @@
 import * as types from '../mutation-types'
 import Api from '@/api/index'
+import Vue from 'vue'
 
 // 公共loading基础效果
 const state = {
@@ -12,33 +13,26 @@ const getters = {
 }
 
 const mutations = {
+  // 登录
   [types.LOGIN_IN](state, payload) {
-    state.login = payload.status
-  },
-  [types.SHOW_LOADING](state, payload) {
-    state.loading = payload.status
-  },
-  [types.HIDE_LOADING](state, payload) {
-    state.loading = payload.status
+    state.login = payload.login
   }
 }
 
 const actions = {
   login({commit, state}) {
     return Api.postLogin().then((data) => {
-      return data;
-    })
-  },
-  showLoading({commit, state}) {
-    commit({
-      type: types.SHOW_LOADING,
-      status: true
-    })
-  },
-  hideLoading({commit, state}) {
-    commit({
-      type: types.HIDE_LOADING,
-      status: false
+      if(data.code === 200){
+        commit({
+          type: types.LOGIN_IN,
+          login: true
+        });
+        return data;
+      }else{
+        // todo: message插件不带toast方法？ 暂未找到
+        Vue.prototype.$message({content: data.message});
+        return;
+      }
     })
   }
 }

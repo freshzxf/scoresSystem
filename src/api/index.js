@@ -36,6 +36,26 @@ export default {
    * @returns status:success
    */
   postReg(account, password, cellphone) {
-    return post('reg')
+    return post('/reg')
+  },
+
+  /**
+   * @name post获取记录
+   * @method post
+   * @param
+   * @returns status:success
+   */
+  getRecords(param) {
+    return get('/records', param)
+  },
+
+  /**
+   * @name post获取所有排名
+   * @method post
+   * @param
+   * @returns status:success
+   */
+  getRanks(param) {
+    return get('/ranks', param)
   }
 }

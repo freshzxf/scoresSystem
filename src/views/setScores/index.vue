@@ -54,22 +54,21 @@
       <mu-container ref="container" class="pl-0 pr-0">
         <mu-load-more @refresh="refresh" :refreshing="refreshing" :loading="loading" @load="load">
           <mu-list>
-            <template v-for="(item,index) in copyRanks">
+            <template v-for="(item, index) in copyRanks">
               <mu-list-item :key="item.id" class="pl-0 pr-0">
                 <!--排名-->
-                <mu-list-item-action :style="{'min-width': '28px'}">
+                <mu-list-item-action :style="{color: index < 3 ? redColor : '','min-width': '28px'}">
                   {{ item.rank }}
                 </mu-list-item-action>
                 <!--姓名积分-->
                 <mu-list-item-content>
                   <mu-chip color="success" slot="left" class="mt-5">
                     <mu-avatar :size="32">
-                      <img src="/static/img/avatar.jpg">
+                      <img :src="item.avatar">
                     </mu-avatar>
-                    {{item.name}} / {{ item.total }} 分
+                    {{item.name.length > 9 ? item.name.substr(0, 9) + '...' : item.name}} / {{ item.total }} 分
                   </mu-chip>
                 </mu-list-item-content>
-                <!--<p class="mr-10" v-if="item.change"><span>{{item.reason}}</span>： {{item.change}}</p>-->
                 <!--操作栏-->
                 <mu-list-item-action>
                   <mu-chip :color="item.change < 0 ? 'red' : 'primary'" class="pr-0">
@@ -117,6 +116,10 @@
   export default {
     data() {
       return {
+        loadedAll: false,
+
+        redColor: '#f44336',
+
         searchName: '', // 搜索名字
         iptEnd: false, // 是否输入完毕（为了适应中文输入法）
         focus: false, // 搜索框的聚焦状态
@@ -125,51 +128,6 @@
         currentName: '', // 当前编辑用户名
         currentReason: '', // 当前编辑事由
         currentChange: '', // 当前编辑数量
-
-        ranks: [
-          {id: 1, name: 'freshzxf', rank: 1, total: 3455},
-          {id: 2, name: 'littlefish', rank: 2, total: 2876},
-          {id: 3, name: 'littlefish', rank: 3, total: 2876},
-          {id: 4, name: 'littlefish', rank: 4, total: 2876},
-          {id: 5, name: 'littlefish', rank: 5, total: 2876},
-          {id: 6, name: 'littlefish', rank: 6, total: 2876},
-          {id: 7, name: 'littlefish', rank: 7, total: 2876},
-          {id: 8, name: 'littlefish', rank: 8, total: 2876},
-          {id: 9, name: 'littlefish', rank: 9, total: 2876},
-          {id: 10, name: 'littlefish', rank: 10, total: 2876},
-          {id: 11, name: 'littlefish', rank: 11, total: 2876},
-          {id: 12, name: 'littlefish', rank: 12, total: 2876},
-          {id: 13, name: 'littlefish', rank: 13, total: 2876},
-          {id: 14, name: 'littlefish', rank: 14, total: 2876},
-          {id: 15, name: 'littlefish', rank: 15, total: 2876},
-          {id: 16, name: 'littlefish', rank: 16, total: 2876},
-          {id: 17, name: 'littlefish', rank: 17, total: 2876},
-          {id: 18, name: 'littlefish', rank: 18, total: 2876},
-          {id: 19, name: 'littlefish', rank: 19, total: 2876},
-          {id: 20, name: 'littlefish', rank: 20, total: 2876}
-        ], // 原始总列表数据，供搜索时候从总数据中搜索
-        copyRanks: [
-          {id: 1, name: 'freshzxf', rank: 1, total: 3455},
-          {id: 2, name: 'littlefish', rank: 2, total: 2876},
-          {id: 3, name: 'littlefish', rank: 3, total: 2876},
-          {id: 4, name: 'littlefish', rank: 4, total: 2876},
-          {id: 5, name: 'littlefish', rank: 5, total: 2876},
-          {id: 6, name: 'littlefish', rank: 6, total: 2876},
-          {id: 7, name: 'littlefish', rank: 7, total: 2876},
-          {id: 8, name: 'littlefish', rank: 8, total: 2876},
-          {id: 9, name: 'littlefish', rank: 9, total: 2876},
-          {id: 10, name: 'littlefish', rank: 10, total: 2876},
-          {id: 11, name: 'littlefish', rank: 11, total: 2876},
-          {id: 12, name: 'littlefish', rank: 12, total: 2876},
-          {id: 13, name: 'littlefish', rank: 13, total: 2876},
-          {id: 14, name: 'littlefish', rank: 14, total: 2876},
-          {id: 15, name: 'littlefish', rank: 15, total: 2876},
-          {id: 16, name: 'littlefish', rank: 16, total: 2876},
-          {id: 17, name: 'littlefish', rank: 17, total: 2876},
-          {id: 18, name: 'littlefish', rank: 18, total: 2876},
-          {id: 19, name: 'littlefish', rank: 19, total: 2876},
-          {id: 20, name: 'littlefish', rank: 20, total: 2876}
-        ], // 列表数据副本，渲染列表用的是此数据，编辑后也是修改此数据（每项数据新增reason，reasonText，change）
 
         refreshing: false,
         open: false,
@@ -188,6 +146,22 @@
         }], // 标签加对应值
       }
     },
+    computed: {
+      ranks: function(){
+        return this.$store.state.common.ranks;
+      },
+      copyRanks: function(){
+        return this.$store.state.common.ranks;
+      },
+      ranksOnce: function(){
+        return this.$store.state.common.ranksOnce;
+      }
+    },
+    created () {
+      if(!this.ranks.length){
+        this.$store.dispatch('ranks', {ranks: this.ranksOnce});
+      }
+    },
     watch: {
       searchName: function (val) {
         // 每次都是从全局数据中搜索
@@ -204,14 +178,16 @@
         setTimeout(() => {
           this.refreshing = false
           this.text = this.text === 'List' ? 'Menu' : 'List'
-          this.num = 10
         }, 2000)
       },
       load() {
-        this.loading = true
-        setTimeout(() => {
-          this.loading = false
-        }, 2000)
+        this.loading = true;
+        this.$store.dispatch('ranks', {records: this.ranksOnce}).then((data) => {
+          if(!data){
+            this.loadedAll = true;
+          }
+          this.loading = false;
+        });
       },
       edit(id, index) {
         // 设置当前编辑的用户名

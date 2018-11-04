@@ -48,11 +48,11 @@
       return {
         usernameRules: [
           {validate: (val) => !!val, message: '必须填写用户名'},
-          {validate: (val) => val.length >= 3, message: '用户名长度大于3'}
+          {validate: (val) => val.length > 3 && val.length < 10, message: '用户名长度大于3小于10'}
         ],
         passwordRules: [
           {validate: (val) => !!val, message: '必须填写密码'},
-          {validate: (val) => val.length >= 3 && val.length <= 10, message: '密码长度大于3小于10'}
+          {validate: (val) => val.length >= 3 && val.length <= 10, message: '用户名长度大于3小于10'}
         ],
         passwordRules1: [
           {validate: (val) => !!val, message: '必须填写密码'},

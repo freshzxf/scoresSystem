@@ -47,7 +47,7 @@
       return {
         usernameRules: [
           {validate: (val) => !!val, message: '必须填写用户名'},
-          {validate: (val) => val.length >= 3, message: '用户名长度大于3'}
+          {validate: (val) => val.length > 3 && val.length < 10, message: '用户名长度大于3小于10'}
         ],
         passwordRules: [
           {validate: (val) => !!val, message: '必须填写密码'},
@@ -67,12 +67,11 @@
           if (result) {
             const loading = this.$loading();
             this.$store.dispatch('login').then((data) => {
-              this.$util.setStorage('token', data.token);
-              this.$router.push({path: '/index'});
+              if(data && data.token){
+                this.$util.setStorage('token', data.token);
+                this.$router.push({path: '/index'});
+              }
               loading.close();
-              // todo: 登录成功后同步设置登录状态共享值为true
-              this.$store.commit('LOGIN_IN',{});
-              console.log(this.$store.state.base.login);
             });
           }
         })

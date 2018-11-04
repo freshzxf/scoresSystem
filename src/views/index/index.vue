@@ -2,25 +2,26 @@
   <div>
     <mu-paper class="demo-loadmore-wrap">
 
-      <mu-appbar color="primary">
+      <!--顶部个人信息总览-->
+      <mu-appbar v-if="self" color="primary">
 
-        <mu-chip class="" color="green" slot="left">
+        <mu-chip color="green" slot="left">
           <mu-avatar :size="32">
-            <img src="/static/img/avatar.jpg">
+            <img :src="self.avatar">
           </mu-avatar>
-          王胜军 / <i class="f-20 ml-5 mr-5">3928</i> 分
+          {{self.name}} / <i class="f-20 ml-5 mr-5">{{self.total}}</i> 分
         </mu-chip>
 
         <mu-button class="" flat color="yellow" slot="right" @click="open = !open">
-          排名 <i class="f-20 ml-5">12</i>
+          排名 <i class="f-20 ml-5">{{self.rank}}</i>
         </mu-button>
-
 
       </mu-appbar>
 
+      <!--个人记录列表-->
       <mu-container ref="container" class="pl-0 pr-0">
-        <mu-load-more @refresh="refresh" :refreshing="refreshing" :loading="loading" @load="load">
-          <mu-list>
+        <mu-load-more @refresh="refresh" :refreshing="refreshing" :loading="loading" @load="load" :loaded-all="loadedAll">
+          <mu-list v-if="records">
             <template v-for="(item) in records">
               <mu-list-item>
 
@@ -42,22 +43,21 @@
         </mu-load-more>
       </mu-container>
 
-      <!--抽屉-->
+      <!--抽屉式展示其他所有人员总信息-->
       <mu-drawer :open.sync="open" :docked="docked" :right="position === 'right'">
-        <mu-list>
-          <template v-for="(item) in ranks">
+        <mu-list v-if="ranks">
+          <template v-for="(item, index) in ranks">
             <mu-list-item>
 
-              <mu-list-item-action :style="{color: redColor,'min-width': '28px'}">
+              <mu-list-item-action :style="{color: index < 3 ? redColor : '','min-width': '28px'}">
                 {{ item.rank }}
               </mu-list-item-action>
-
               <mu-list-item-content>
                 <mu-chip class="" color="green" slot="left">
                   <mu-avatar :size="32">
-                    <img src="/static/img/avatar.jpg">
+                    <img :src='item.avatar'>
                   </mu-avatar>
-                  {{item.name}}
+                  {{item.name.length > 9 ? item.name.substr(0, 9) + '...' : item.name}}
                 </mu-chip>
               </mu-list-item-content>
 
@@ -71,83 +71,69 @@
         </mu-list>
       </mu-drawer>
 
+      <!--返回顶部-->
+      <back-top size="small" :distance="150" :opacity=".7"></back-top>
     </mu-paper>
   </div>
 </template>
 <script>
+  import backTop from '@/components/backTop';
   export default {
-    data() {
+    components: {
+      backTop
+    },
+    data () {
       return {
         redColor: '#f44336',
-        records: [
-          {time: '2018-11-01', change: 10, total: 2879},
-          {time: '2018-11-02', change: -3, total: 2876},
-          {time: '2018-11-03', change: 20, total: 2896},
-          {time: '2018-11-01', change: 10, total: 2879},
-          {time: '2018-11-02', change: -3, total: 2876},
-          {time: '2018-11-03', change: 20, total: 2896},
-          {time: '2018-11-01', change: 10, total: 2879},
-          {time: '2018-11-02', change: -3, total: 2876},
-          {time: '2018-11-03', change: 20, total: 2896},
-          {time: '2018-11-01', change: 10, total: 2879},
-          {time: '2018-11-02', change: -3, total: 2876},
-          {time: '2018-11-03', change: 20, total: 2896},
-          {time: '2018-11-01', change: 10, total: 2879},
-          {time: '2018-11-02', change: -3, total: 2876},
-          {time: '2018-11-03', change: 20, total: 2896},
-          {time: '2018-11-01', change: 10, total: 2879},
-          {time: '2018-11-02', change: -3, total: 2876},
-          {time: '2018-11-03', change: 20, total: 2896},
-          {time: '2018-11-01', change: 10, total: 2879},
-          {time: '2018-11-02', change: -3, total: 2876},
-          {time: '2018-11-03', change: 20, total: 2896},
-        ],
-        ranks: [
-          {name: 'freshzxf', rank: 1, total: 3455},
-          {name: 'littlefish', rank: 2, total: 2876},
-          {name: 'littlefish', rank: 3, total: 2876},
-          {name: 'littlefish', rank: 4, total: 2876},
-          {name: 'littlefish', rank: 5, total: 2876},
-          {name: 'littlefish', rank: 6, total: 2876},
-          {name: 'littlefish', rank: 7, total: 2876},
-          {name: 'littlefish', rank: 8, total: 2876},
-          {name: 'littlefish', rank: 9, total: 2876},
-          {name: 'littlefish', rank: 10, total: 2876},
-          {name: 'littlefish', rank: 11, total: 2876},
-          {name: 'littlefish', rank: 12, total: 2876},
-          {name: 'littlefish', rank: 13, total: 2876},
-          {name: 'littlefish', rank: 14, total: 2876},
-          {name: 'littlefish', rank: 15, total: 2876},
-          {name: 'littlefish', rank: 16, total: 2876},
-          {name: 'littlefish', rank: 17, total: 2876},
-          {name: 'littlefish', rank: 18, total: 2876},
-          {name: 'littlefish', rank: 19, total: 2876},
-          {name: 'littlefish', rank: 20, total: 2876}
-        ],
         refreshing: false,
+        loadedAll: false,
         open: false,
         docked: false,
-        open: false,
         position: 'right',
         loading: false
       }
     },
+    computed: {
+      records: function(){
+        return this.$store.state.self.records;
+      },
+      self: function(){
+        return this.$store.state.self.self;
+      },
+      ranks: function(){
+        return this.$store.state.common.ranks;
+      },
+      recordsOnce: function(){
+        return this.$store.state.self.recordsOnce
+      },
+      ranksOnce: function(){
+        return this.$store.state.common.ranksOnce
+      }
+    },
+    created () {
+      if(!this.records.length){
+        this.$store.dispatch('records', {records: this.recordsOnce});
+      }
+      if(!this.ranks.length){
+        this.$store.dispatch('ranks', {ranks: this.ranksOnce});
+      }
+    },
     methods: {
-      refresh() {
-        this.refreshing = true
+      refresh () {
+        this.refreshing = true;
         this.$refs.container.scrollTop = 0
         setTimeout(() => {
           this.refreshing = false
-          this.text = this.text === 'List' ? 'Menu' : 'List'
-          this.num = 10
-        }, 2000)
+        }, 1000)
       },
-      load() {
-        this.loading = true
-        setTimeout(() => {
-          this.loading = false
-          this.num += 10
-        }, 2000)
+      load () {
+        this.loading = true;
+        this.$store.dispatch('records', {records: this.recordsOnce}).then((data) => {
+          if(!data){
+            this.loadedAll = true;
+          }
+          this.loading = false;
+        });
       }
     }
   }
