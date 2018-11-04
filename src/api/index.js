@@ -40,8 +40,8 @@ export default {
   },
 
   /**
-   * @name post获取记录
-   * @method post
+   * @name 获取记录
+   * @method
    * @param
    * @returns status:success
    */
@@ -50,8 +50,8 @@ export default {
   },
 
   /**
-   * @name post获取所有排名
-   * @method post
+   * @name 获取所有排名
+   * @method 
    * @param
    * @returns status:success
    */
