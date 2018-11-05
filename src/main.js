@@ -118,7 +118,8 @@ Vue.prototype.$util = Util;
 
 // 路由配置
 const RouterConfig = {
-  mode: 'history',
+  // base: '/scoresSystem/dist/',
+  mode: 'hash',
   routes: Routers
 }
 const router = new VueRouter(RouterConfig);

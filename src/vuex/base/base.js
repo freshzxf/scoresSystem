@@ -29,9 +29,11 @@ const actions = {
         });
         return data;
       }else{
+        return new Promise(function(resolve, reject) {
+          reject(data.message); // 返回一个rejected的Promise实例
+        });
         // todo: message插件不带toast方法？ 暂未找到
-        Vue.prototype.$message({content: data.message});
-        return;
+        // Vue.prototype.$message({content: data.message});
       }
     })
   }

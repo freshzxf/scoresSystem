@@ -32,10 +32,12 @@
           <mu-icon value="lock" size="16" class="mr-10"></mu-icon>
           安全登录
         </mu-button>
-        <!--<mu-form-item>
-          <mu-button color="primary" @click="submit">提交</mu-button>
-          <mu-button @click="clear">重置</mu-button>
-        </mu-form-item>-->
+        <!--错误提示-->
+        <mu-snackbar color="error" :open.sync="error.open">
+          <mu-icon left value="warning"></mu-icon>
+          {{error.message}}
+          <mu-button flat slot="action" color="#fff" @click="error.open = false">关闭</mu-button>
+        </mu-snackbar>
       </mu-form>
 
     </mu-container>
@@ -58,7 +60,12 @@
           password: ''
         },
         loading: false,
-        size: 66
+        size: 66,
+        error:{
+          open: false,
+          message: '',
+          timeOut: 3000,
+        }
       }
     },
     methods: {
@@ -72,6 +79,16 @@
                 this.$router.push({path: '/index'});
               }
               loading.close();
+            }).catch((err)=>{
+              // 打开提示层
+              this.error.message = err;
+              this.error.open = true;
+              // 关闭loading
+              loading.close();
+              // 自动关闭
+              this.error.timer = setTimeout(() => {
+                this.error.open = false;
+              }, this.error.timeOut);
             });
           }
         })
