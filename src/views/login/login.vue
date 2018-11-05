@@ -33,10 +33,10 @@
           安全登录
         </mu-button>
         <!--错误提示-->
-        <mu-snackbar color="error" :open.sync="error.open">
-          <mu-icon left value="warning"></mu-icon>
-          {{error.message}}
-          <mu-button flat slot="action" color="#fff" @click="error.open = false">关闭</mu-button>
+        <mu-snackbar v-if="tips.open" :color="tips.color" :open.sync="tips.open">
+          <mu-icon left :value="tips.icon"></mu-icon>
+          {{tips.message}}
+          <mu-button flat slot="action" color="#fff" @click="tips.open = false">关闭</mu-button>
         </mu-snackbar>
       </mu-form>
 
@@ -61,8 +61,10 @@
         },
         loading: false,
         size: 66,
-        error:{
+        tips:{
           open: false,
+          color: '',
+          icon: '',
           message: '',
           timeOut: 3000,
         }
@@ -78,17 +80,25 @@
                 this.$util.setStorage('token', data.token);
                 this.$router.push({path: '/index'});
               }
+              // 打开提示层
+              this.tips.message = data.message;
+              this.tips.color = 'success';
+              this.tips.icon = 'check_circle';
+              this.tips.open = true;
+              // 关闭loading
               loading.close();
             }).catch((err)=>{
               // 打开提示层
-              this.error.message = err;
-              this.error.open = true;
+              this.tips.message = err;
+              this.tips.color = 'error';
+              this.tips.icon = 'priority_high';
+              this.tips.open = true;
               // 关闭loading
               loading.close();
               // 自动关闭
-              this.error.timer = setTimeout(() => {
-                this.error.open = false;
-              }, this.error.timeOut);
+              this.tips.timer = setTimeout(() => {
+                this.tips.open = false;
+              }, this.tips.timeOut);
             });
           }
         })
