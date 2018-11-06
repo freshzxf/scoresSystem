@@ -42,6 +42,14 @@ const routers = [
     component: (resolve) => require(['./views/market/index.vue'], resolve)
   },
   {
+    path: '/self',
+    name: 'self',
+    meta: {
+      title: title + '--管理中心'
+    },
+    component: (resolve) => require(['./views/self/index.vue'], resolve)
+  },
+  {
     path: '*',
     meta: {
       title: '访问出错啦'

@@ -113,6 +113,10 @@
   position: relative;
 }
 
+.fix() {
+  position: fixed;
+}
+
 .pointer() {
   cursor: pointer;
 }
@@ -174,6 +178,14 @@
 
 //打包默认样式;
 .common( @content: 1200, @unit: px) {
+  .top-nav{position: fixed;left: 0;right: 0}
+  .bottom-nav {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    table-layout: fixed;
+    box-shadow: 0 -3px 30px #eee;
+  }
   //缩进
   .indent{
     .indent();

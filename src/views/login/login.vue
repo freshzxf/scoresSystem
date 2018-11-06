@@ -78,7 +78,7 @@
             this.$store.dispatch('login').then((data) => {
               if(data && data.token){
                 this.$util.setStorage('token', data.token);
-                this.$router.push({path: '/index'});
+                this.$router.push({path: '/self'});
               }
               // 打开提示层
               this.tips.message = data.message;
