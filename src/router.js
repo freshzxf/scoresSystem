@@ -34,6 +34,14 @@ const routers = [
     component: (resolve) => require(['./views/setScores/index.vue'], resolve)
   },
   {
+    path: '/market',
+    name: 'market',
+    meta: {
+      title: title + '--积分商城'
+    },
+    component: (resolve) => require(['./views/market/index.vue'], resolve)
+  },
+  {
     path: '*',
     meta: {
       title: '访问出错啦'
