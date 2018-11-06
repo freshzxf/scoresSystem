@@ -14,7 +14,9 @@
     <div class="content-con">
       <img :src="src" alt="404" class="w">
       <div class="tc mt-10">
-        <div class="f-30">{{ code }}</div>
+        <mu-button flat color="primary">
+          <span class="f-30">{{ code }}</span>
+        </mu-button>
         <div class="f-20 mt-10">{{ desc }}</div>
       </div>
       <back-btn-group class="mt-20"></back-btn-group>

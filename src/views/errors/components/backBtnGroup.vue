@@ -17,7 +17,7 @@
     methods: {
       backHome () {
         this.$router.replace({
-          name: 'home'
+          name: 'index'
         })
       },
       backPrev () {
