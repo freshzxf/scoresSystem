@@ -1,7 +1,7 @@
 <template>
-  <div style="display: table;margin: 50px auto 0">
-    <Button size="large" @click="backHome" class="mr-30">返回首页</Button>
-    <Button size="large" type="text" @click="backPrev">{{ second }}s后自动返回</Button>
+  <div style="display: table;margin: auto">
+    <mu-button class="mr-10" color="primary" @click="backHome">返回首页</mu-button>
+    <mu-button flat @click="backPrev">{{ second }}s后自动返回</mu-button>
   </div>
 </template>
 

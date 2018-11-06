@@ -1,6 +1,6 @@
 <template>
 
-  <error-content code="404" desc="Oh~~您的页面好像飞走了~" :src="src" style="padding: 60px 0"/>
+  <error-content code="404" desc="Oh~~您的页面好像飞走了~" :src="src"/>
 
 </template>
 

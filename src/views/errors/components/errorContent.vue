@@ -6,35 +6,18 @@
     background: #f8f8f9;
   }
   .content-con{
-    width: 400px;
     margin: auto;
-  }
-  img{
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-  h4{
-    font-size: 80px;
-    font-weight: 700;
-    color: #348EED;
-  }
-  h5{
-    font-size: 20px;
-    font-weight: normal;
-    letter-spacing: 2px;
-    color: #67647D;
   }
 </style>
 <template>
   <div class="error-page">
     <div class="content-con">
-      <img :src="src" alt="404">
-      <div class="tc">
-        <h4>{{ code }}</h4>
-        <h5>{{ desc }}</h5>
+      <img :src="src" alt="404" class="w">
+      <div class="tc mt-10">
+        <div class="f-30">{{ code }}</div>
+        <div class="f-20 mt-10">{{ desc }}</div>
       </div>
-      <back-btn-group class=""></back-btn-group>
+      <back-btn-group class="mt-20"></back-btn-group>
     </div>
   </div>
 </template>
