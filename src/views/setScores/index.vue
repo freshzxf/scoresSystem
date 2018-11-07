@@ -211,6 +211,7 @@
         }
       },
       scroll () {
+        // todo 触发频次太高，需要优化
         this.scrollTop = window.scrollY
       }
     }

@@ -73,13 +73,17 @@
 
     <!--返回顶部-->
     <back-top size="small" :distance="150" :opacity=".7" @scroll="scroll"></back-top>
+    <!--返回主页-->
+    <back-home size="small" :opacity=".7"></back-home>
   </div>
 </template>
 <script>
   import backTop from '@/components/backTop';
+  import backHome from '@/components/backHome';
   export default {
     components: {
-      backTop
+      backTop,
+      backHome
     },
     data () {
       return {
