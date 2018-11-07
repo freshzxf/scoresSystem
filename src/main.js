@@ -128,7 +128,7 @@ const router = new VueRouter(RouterConfig);
 // 路由生命周期(拦截)
 router.beforeEach((to, from, next) => {
   if (Util.getStorage('token')) {
-    to.path === '/login' ? next('/self') : '';
+    to.path === '/login' || to.path === '/' ? next('/self') : '';
     next();
   } else {
     to.path === '/login' || to.path === '/reg' ? next() : next('/login');
