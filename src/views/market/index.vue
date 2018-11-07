@@ -1,7 +1,7 @@
 <template>
   <mu-paper>
     <mu-appbar color="primary">
-      <mu-button icon slot="left">
+      <mu-button icon slot="left" @click="$router.go(-1)">
         <mu-icon value="reply"></mu-icon>
       </mu-button>
       积分商城

@@ -12,7 +12,7 @@
 <template>
   <div class="error-page">
     <div class="content-con">
-      <img :src="src" alt="404" class="w">
+      <img :src="src" :alt="code" class="w">
       <div class="tc mt-10">
         <mu-button flat color="primary">
           <span class="f-30">{{ code }}</span>

@@ -25,7 +25,7 @@
   <div v-scroll="scroll">
     <mu-appbar color="primary" :class="{'top-nav': scrollTop > 150}">
 
-      <mu-button icon slot="left">
+      <mu-button icon slot="left" @click="$router.go(-1)">
         <mu-icon value="reply"></mu-icon>
       </mu-button>
       Scores

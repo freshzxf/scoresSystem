@@ -13,15 +13,19 @@
 
       <!--表单-->
       <mu-form ref="form" :model="validateForm" class="mt-20">
-        <mu-form-item label="用户名：" label-float help-text="" prop="username" :rules="usernameRules">
+        <mu-form-item class="mb-10" label="用户名：" label-float help-text="" prop="username" :rules="usernameRules">
           <mu-text-field v-model="validateForm.username" prop="username"></mu-text-field>
         </mu-form-item>
-        <mu-form-item label="密码：" label-float help-text="" prop="password" :rules="passwordRules">
+        <mu-form-item class="mb-10" label="密码：" label-float help-text="" prop="password" :rules="passwordRules">
           <mu-text-field type="password" v-model="validateForm.password" prop="password"></mu-text-field>
         </mu-form-item>
 
-        <mu-button flat round color="primary" to="/reg">
-          <mu-icon value="edit" size="16" class="mr-10"></mu-icon>
+        <mu-button class="mr-10 mb-10"
+                   flat
+                   round
+                   color="primary"
+                   to="/reg">
+          <mu-icon value="edit" size="16"></mu-icon>
           没有账号，赶紧注册
         </mu-button>
 

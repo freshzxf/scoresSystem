@@ -13,25 +13,39 @@
 
       <!--表单-->
       <mu-form ref="form" :model="validateForm" class="mt-20">
-        <mu-form-item label="用户名：" label-float help-text="" prop="username" :rules="usernameRules">
+        <mu-form-item class="mb-10"
+          label="用户名：" label-float help-text="" prop="username" :rules="usernameRules">
           <mu-text-field v-model="validateForm.username" prop="username"></mu-text-field>
         </mu-form-item>
-        <mu-form-item label="密码：" label-float help-text="" prop="password" :rules="passwordRules">
+        <mu-form-item class="mb-10"
+                      label="密码：" label-float help-text="" prop="password" :rules="passwordRules">
           <mu-text-field type="password" v-model="validateForm.password" prop="password"></mu-text-field>
         </mu-form-item>
-        <mu-form-item label="确认密码：" label-float help-text="" prop="password1" :rules="passwordRules1">
+        <mu-form-item class="mb-10"
+                      label="确认密码：" label-float help-text="" prop="password1" :rules="passwordRules1">
           <mu-text-field type="password" v-model="validateForm.password1" prop="password1"></mu-text-field>
         </mu-form-item>
-        <mu-form-item prop="isAgree" :rules="argeeRules">
+        <mu-form-item class="mb-10"
+                      prop="isAgree" :rules="argeeRules">
           <mu-checkbox label="同意用户协议" v-model="validateForm.isAgree"></mu-checkbox>
         </mu-form-item>
 
-        <mu-button flat round color="primary" to="/">
-          <mu-icon value="reply" size="16" class="mr-10"></mu-icon>
-          已有账号，返回登录</mu-button>
-        <mu-button full-width round color="primary" @click="submit">
-          <mu-icon value="edit" size="16" class="mr-10"></mu-icon>
-          提交注册</mu-button>
+        <mu-button class="mr-10 mb-10"
+          flat
+          round
+          color="primary"
+          to="/">
+          <mu-icon value="reply" size="16"></mu-icon>
+          已有账号，返回登录
+        </mu-button>
+        <mu-button class="mr-10"
+          full-width
+          round
+          color="primary"
+          @click="submit">
+          <mu-icon value="edit" size="16"></mu-icon>
+          提交注册
+        </mu-button>
 
         <!--<mu-form-item>
           <mu-button color="primary" @click="submit">提交</mu-button>
@@ -66,18 +80,46 @@
           password1: '',
           isAgree: true
         },
+        tips:{
+          open: false,
+          color: '',
+          icon: '',
+          message: '',
+          timeOut: 3000,
+        },
         size: 66
       }
     },
     methods: {
       submit () {
         this.$refs.form.validate().then((result) => {
-          console.log('form valid: ', result);
           if(result){
             const loading = this.$loading();
-            var timer = setTimeout(function () {
+            this.$store.dispatch('login').then((data) => {
+              if(data && data.token){
+                this.$util.setStorage('token', data.token);
+                this.$router.push({path: '/self'});
+              }
+              // 打开提示层
+              this.tips.message = data.message;
+              this.tips.color = 'success';
+              this.tips.icon = 'check_circle';
+              this.tips.open = true;
+              // 关闭loading
               loading.close();
-            },2000)
+            }).catch((err)=>{
+              // 打开提示层
+              this.tips.message = err;
+              this.tips.color = 'error';
+              this.tips.icon = 'priority_high';
+              this.tips.open = true;
+              // 关闭loading
+              loading.close();
+              // 自动关闭
+              this.tips.timer = setTimeout(() => {
+                this.tips.open = false;
+              }, this.tips.timeOut);
+            });
           }
         })
       },

@@ -87,7 +87,7 @@
       </mu-list-item>
       <mu-divider></mu-divider>-->
 
-      <mu-list-item avatar button>
+      <mu-list-item avatar button to="/service">
         <mu-list-item-action>
           <mu-avatar color="cyan">
             <mu-icon value="chat"></mu-icon>
