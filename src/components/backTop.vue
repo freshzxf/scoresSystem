@@ -54,10 +54,12 @@
     mounted () {
       var that = this
       window.removeEventListener('scroll', function () {
-      }, false)
+      }, false);
       window.addEventListener('scroll', that.$util.debounce(function () {
         var scrollTop = document.documentElement.scrollTop || document.body.scrollTop || window.pageYOffset;
-        scrollTop > that.distance ? that.showGoTop = true : that.showGoTop = false
+        scrollTop > that.distance ? that.showGoTop = true : that.showGoTop = false;
+        // 发射事件给父级，部分父级需要监听滚动事件
+        that.$emit('scroll',scrollTop);
       }, 100));
     },
     computed: {},

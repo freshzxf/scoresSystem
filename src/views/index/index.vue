@@ -1,6 +1,6 @@
 <template>
 
-  <div v-scroll="scroll">
+  <div>
 
     <!--顶部个人信息总览-->
     <mu-appbar v-if="self" color="primary" :class="{'top-nav': scrollTop > 150}">
@@ -72,7 +72,7 @@
     </mu-drawer>
 
     <!--返回顶部-->
-    <back-top size="small" :distance="150" :opacity=".7"></back-top>
+    <back-top size="small" :distance="150" :opacity=".7" @scroll="scroll"></back-top>
   </div>
 </template>
 <script>
@@ -118,7 +118,6 @@
         this.$store.dispatch('ranks', {ranks: this.ranksOnce});
       }
     },
-    mounted(){},
     methods: {
       refresh () {
         this.refreshing = true;
@@ -136,8 +135,8 @@
           this.loading = false;
         });
       },
-      scroll(){
-        this.scrollTop = window.scrollY;
+      scroll(data){
+        this.scrollTop = data;
       }
     }
   }

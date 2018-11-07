@@ -41,13 +41,12 @@ let util = {
     var timer = null
     return function () {
       var context = this,
-        args = arguments
-      clearTimeout(timer)
+        args = arguments;
+      clearTimeout(timer);
       timer = setTimeout(function () {
-        method.apply(context, args)
+        method.apply(context, args);
       }, delay)
     }
   }
-
-}
+};
 export default util
