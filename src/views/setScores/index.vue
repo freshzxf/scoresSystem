@@ -22,7 +22,7 @@
   }
 </style>
 <template>
-  <div v-scroll="scroll">
+  <div>
     <mu-appbar color="primary" :class="{'top-nav': scrollTop > 150}">
 
       <mu-button icon slot="left" @click="$router.go(-1)">
@@ -106,10 +106,17 @@
       </mu-dialog>
 
     </mu-container>
+
+    <!--返回顶部-->
+    <back-top size="small" :distance="150" :opacity="0.7" :right="60" @scroll="scroll"></back-top>
   </div>
 </template>
 <script>
+  import backTop from '@/components/backTop';
   export default {
+    components: {
+      backTop
+    },
     data () {
       return {
         scrollTop: 0,
@@ -210,9 +217,8 @@
           console.log('表单验证失败')
         }
       },
-      scroll () {
-        // todo 触发频次太高，需要优化
-        this.scrollTop = window.scrollY
+      scroll(data){
+        this.scrollTop = data;
       }
     }
   }

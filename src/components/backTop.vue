@@ -2,7 +2,6 @@
   .back_top {
     position: fixed;
     bottom: 15px;
-    right: 15px;
     z-index: 1000;
     box-shadow: none;
   }
@@ -10,7 +9,7 @@
 <template>
   <mu-scale-transition>
     <mu-button class="back_top"
-               :style="{opacity: opacity}"
+               :style="{opacity: opacity, right: right + 'px', bottom: bottom + 'px'}"
                @click.native="goTop($event)"
                :small="size === 'small'"
                fab
@@ -28,6 +27,14 @@
       size: {
         type: String,
         default: 'small'
+      },
+      right: {
+        type: Number,
+        default: 15
+      },
+      bottom: {
+        type: Number,
+        default: 15
       },
       opacity: {
         type: Number,
