@@ -1,147 +1,133 @@
 <template>
 
   <div>
-
-    <!--顶部个人信息总览-->
-    <mu-appbar v-if="self" color="primary" :class="{'top-nav': scrollTop > 150}">
-
-      <mu-chip color="green" slot="left">
-        <mu-avatar :size="32">
-          <img :src="self.avatar">
+    <mu-card>
+      <mu-card-header title="freshzxf" sub-title="I'm a weber">
+        <mu-avatar slot="avatar">
+          <img src="/static/img/avatar.jpg">
         </mu-avatar>
-        {{self.name}} / <i class="f-20 ml-5 mr-5">{{self.total}}</i> 分
-      </mu-chip>
+      </mu-card-header>
+      <mu-card-media title="" sub-title="" class="tc">
+        <div class="abs f-30" style="color: white;line-height: 100px;left: 0;right: 0;letter-spacing: 1px">3890分 /10名
+        </div>
+        <img src="/static/img/bg1.jpg" height="100">
+      </mu-card-media>
+    </mu-card>
 
-      <mu-button class="" flat color="yellow" slot="right" @click="open = !open">
-        排名 <i class="f-20 ml-5">{{self.rank}}</i>
-      </mu-button>
+    <mu-list textline="two-line">
+      <mu-list-item avatar button to="/scores">
+        <mu-list-item-action>
+          <mu-avatar color="blue">
+            <mu-icon value="assignment"></mu-icon>
+          </mu-avatar>
+        </mu-list-item-action>
+        <mu-list-item-content>
+          <mu-list-item-title>积分记录</mu-list-item-title>
+          <mu-list-item-sub-title>2018/11/07</mu-list-item-sub-title>
+        </mu-list-item-content>
+        <mu-list-item-action>
+          <mu-button icon>
+            <mu-icon value="chevron_right"></mu-icon>
+          </mu-button>
+        </mu-list-item-action>
+      </mu-list-item>
+      <mu-divider></mu-divider>
 
-    </mu-appbar>
+      <mu-list-item avatar button to="/set_scores">
+        <mu-list-item-action>
+          <mu-avatar color="green">
+            <mu-icon value="brightness_low"></mu-icon>
+          </mu-avatar>
+        </mu-list-item-action>
+        <mu-list-item-content>
+          <mu-list-item-title>积分管理</mu-list-item-title>
+          <mu-list-item-sub-title>新增和扣除积分管理</mu-list-item-sub-title>
+        </mu-list-item-content>
+        <mu-list-item-action>
+          <mu-button icon>
+            <mu-icon value="chevron_right"></mu-icon>
+          </mu-button>
+        </mu-list-item-action>
+      </mu-list-item>
+      <mu-divider></mu-divider>
 
-    <!--个人记录列表-->
-    <mu-container ref="container" class="pl-0 pr-0">
-      <mu-load-more @refresh="refresh" :refreshing="refreshing" :loading="loading" @load="load" :loaded-all="loadedAll">
-        <mu-list v-if="records">
-          <template v-for="(item) in records">
-            <mu-list-item>
+      <mu-list-item avatar button to="/market">
+        <mu-list-item-action>
+          <mu-avatar color="pink">
+            <mu-icon value="local_grocery_store"></mu-icon>
+          </mu-avatar>
+        </mu-list-item-action>
+        <mu-list-item-content>
+          <mu-list-item-title>积分商城</mu-list-item-title>
+          <mu-list-item-sub-title>海量生活日用、电子办公商品等你拿...</mu-list-item-sub-title>
+        </mu-list-item-content>
+        <mu-list-item-action>
+          <mu-button icon>
+            <mu-icon value="chevron_right"></mu-icon>
+          </mu-button>
+        </mu-list-item-action>
+      </mu-list-item>
+      <mu-divider></mu-divider>
 
-              <mu-list-item-content>
-                <mu-list-item-title v-if="item.change>0">{{ item.change }} 分</mu-list-item-title>
-                <mu-list-item-title v-else="item.change>0" :style="{color: redColor}">{{ item.change }} 分
-                </mu-list-item-title>
-                <mu-list-item-sub-title>{{ item.time }}</mu-list-item-sub-title>
-              </mu-list-item-content>
+      <!--<mu-list-item avatar button>
+        <mu-list-item-action>
+          <mu-avatar color="green">
+            <mu-icon value="toys"></mu-icon>
+          </mu-avatar>
+        </mu-list-item-action>
+        <mu-list-item-content>
+          <mu-list-item-title>玩转攻略</mu-list-item-title>
+          <mu-list-item-sub-title>积分涨涨涨，快来学学这些技巧吧...</mu-list-item-sub-title>
+        </mu-list-item-content>
+        <mu-list-item-action>
+          <mu-button icon>
+            <mu-icon value="chevron_right"></mu-icon>
+          </mu-button>
+        </mu-list-item-action>
+      </mu-list-item>
+      <mu-divider></mu-divider>-->
 
-              <mu-list-item-action>
-                {{ item.total }} 分
-              </mu-list-item-action>
+      <mu-list-item avatar button to="/service">
+        <mu-list-item-action>
+          <mu-avatar color="cyan">
+            <mu-icon value="chat"></mu-icon>
+          </mu-avatar>
+        </mu-list-item-action>
+        <mu-list-item-content>
+          <mu-list-item-title>在线客服</mu-list-item-title>
+          <mu-list-item-sub-title>小丁实时在线客服系统</mu-list-item-sub-title>
+        </mu-list-item-content>
+        <mu-list-item-action>
+          <mu-button icon>
+            <mu-icon value="chevron_right"></mu-icon>
+          </mu-button>
+        </mu-list-item-action>
+      </mu-list-item>
+      <mu-divider></mu-divider>
 
-            </mu-list-item>
-            <mu-divider/>
-          </template>
-        </mu-list>
-      </mu-load-more>
-    </mu-container>
+    </mu-list>
 
-    <!--抽屉式展示其他所有人员总信息-->
-    <mu-drawer :open.sync="open" :docked="docked" :right="position === 'right'">
-      <mu-list v-if="ranks">
-        <template v-for="(item, index) in ranks">
-          <mu-list-item>
 
-            <mu-list-item-action :style="{color: index < 3 ? redColor : '','min-width': '28px'}">
-              {{ item.rank }}
-            </mu-list-item-action>
-            <mu-list-item-content>
-              <mu-chip class="" color="green" slot="left">
-                <mu-avatar :size="32">
-                  <img :src='item.avatar'>
-                </mu-avatar>
-                {{item.name.length > 9 ? item.name.substr(0, 9) + '...' : item.name}}
-              </mu-chip>
-            </mu-list-item-content>
+    <!--<mu-bottom-nav value="self" color="primary" class="bottom-nav">-->
+      <!--<mu-bottom-nav-item value="self" title="管理中心" icon="person" to=""></mu-bottom-nav-item>-->
+      <!--<mu-bottom-nav-item value="service" title="在线客服" icon="phone"></mu-bottom-nav-item>-->
+      <!--<mu-bottom-nav-item value="market" title="积分商城" icon="books"></mu-bottom-nav-item>-->
+    <!--</mu-bottom-nav>-->
 
-            <mu-list-item-action>
-              {{ item.total }} 分
-            </mu-list-item-action>
-
-          </mu-list-item>
-          <mu-divider/>
-        </template>
-      </mu-list>
-    </mu-drawer>
-
-    <!--返回顶部-->
-    <back-top size="small" :distance="150" :opacity=".7" @scroll="scroll"></back-top>
-    <!--返回主页-->
-    <back-home size="small" :opacity=".7"></back-home>
   </div>
+
+
 </template>
 <script>
-  import backTop from '@/components/backTop';
-  import backHome from '@/components/backHome';
   export default {
-    components: {
-      backTop,
-      backHome
-    },
     data () {
       return {
-        scrollTop: 0,
-        redColor: '#f44336',
-        refreshing: false,
-        loadedAll: false,
-        open: false,
-        docked: false,
-        position: 'right',
-        loading: false
+        shift: 'self'
       }
     },
-    computed: {
-      records: function(){
-        return this.$store.state.self.records;
-      },
-      self: function(){
-        return this.$store.state.self.self;
-      },
-      ranks: function(){
-        return this.$store.state.common.ranks;
-      },
-      recordsOnce: function(){
-        return this.$store.state.self.recordsOnce
-      },
-      ranksOnce: function(){
-        return this.$store.state.common.ranksOnce
-      }
-    },
-    created () {
-      if(!this.records.length){
-        this.$store.dispatch('records', {records: this.recordsOnce});
-      }
-      if(!this.ranks.length){
-        this.$store.dispatch('ranks', {ranks: this.ranksOnce});
-      }
-    },
-    methods: {
-      refresh () {
-        this.refreshing = true;
-        this.$refs.container.scrollTop = 0
-        setTimeout(() => {
-          this.refreshing = false
-        }, 1000)
-      },
-      load () {
-        this.loading = true;
-        this.$store.dispatch('records', {records: this.recordsOnce}).then((data) => {
-          if(!data){
-            this.loadedAll = true;
-          }
-          this.loading = false;
-        });
-      },
-      scroll(data){
-        this.scrollTop = data;
-      }
+    mounted () {
     }
   }
 </script>
+
+

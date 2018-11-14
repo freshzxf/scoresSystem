@@ -42,12 +42,12 @@ const routers = [
     component: (resolve) => require(['./views/market/index.vue'], resolve)
   },
   {
-    path: '/self',
-    name: 'self',
+    path: '/scores',
+    name: 'scores',
     meta: {
-      title: title + '--管理中心'
+      title: title + '--积分'
     },
-    component: (resolve) => require(['./views/self/index.vue'], resolve)
+    component: (resolve) => require(['./views/scores/index.vue'], resolve)
   },
   {
     path: '*',

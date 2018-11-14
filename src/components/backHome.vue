@@ -11,7 +11,7 @@
   <mu-scale-transition>
     <mu-button class="back_home"
                :style="{opacity: opacity}"
-               to="/self"
+               to="/"
                :small="size === 'small'"
                fab
                color="primary">
