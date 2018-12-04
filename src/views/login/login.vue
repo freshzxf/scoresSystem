@@ -2,18 +2,17 @@
   <div>
     <mu-container>
 
-
       <mu-flex class="mt-20" justify-content="center">
         <mu-avatar class="center" :size="size">
           <img src="/static/img/error-401.svg">
         </mu-avatar>
       </mu-flex>
 
-      <div class="tc f-18 mt-10">xxx积分管理系统</div>
+      <div class="tc f-18 mt-10">分销云平台</div>
 
       <!--表单-->
       <mu-form ref="form" :model="validateForm" class="mt-20">
-        <mu-form-item class="mb-10" label="用户名：" label-float help-text="" prop="username" :rules="usernameRules">
+        <mu-form-item class="mb-10" label="手机号码：" label-float help-text="" prop="username" :rules="usernameRules">
           <mu-text-field v-model="validateForm.username" prop="username"></mu-text-field>
         </mu-form-item>
         <mu-form-item class="mb-10" label="密码：" label-float help-text="" prop="password" :rules="passwordRules">
@@ -82,7 +81,7 @@
             this.$store.dispatch('login').then((data) => {
               if(data && data.token){
                 this.$util.setStorage('token', data.token);
-                this.$router.push({path: '/self'});
+                this.$router.push({path: '/'});
               }
               // 打开提示层
               this.tips.message = data.message;

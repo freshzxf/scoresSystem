@@ -9,40 +9,58 @@
         </mu-avatar>
       </mu-flex>
 
-      <div class="tc f-18 mt-10">xxx积分管理系统</div>
+      <div class="tc f-18 mt-10">分销云平台</div>
 
       <!--表单-->
-      <mu-form ref="form" :model="validateForm" class="mt-20">
-        <mu-form-item class="mb-10"
-          label="用户名：" label-float help-text="" prop="username" :rules="usernameRules">
+      <mu-form ref="form" :model="validateForm" class="">
+        <mu-form-item class="mb-0"
+                      label="姓名：" label-float help-text="" prop="username" :rules="usernameRules">
           <mu-text-field v-model="validateForm.username" prop="username"></mu-text-field>
         </mu-form-item>
-        <mu-form-item class="mb-10"
+        <mu-form-item class="mb-0"
+          label="手机号码：" label-float help-text="" prop="phone" :rules="phoneRules">
+          <mu-text-field v-model="validateForm.phone" prop="phone"></mu-text-field>
+        </mu-form-item>
+        <mu-form-item class="mb-0"
+                      label="身份证号码：" label-float help-text="" prop="IDcard" :rules="IDcardRules">
+          <mu-text-field v-model="validateForm.IDcard" prop="IDcard"></mu-text-field>
+        </mu-form-item>
+
+        <mu-form-item class="mb-0"
+                      label="手机验证码："
+                      label-float
+                      help-text=""
+                      prop="verifyCode"
+                      :rules="verifyCodeRules">
+          <mu-text-field v-model="validateForm.verifyCode" prop="verifyCode"
+                         append="@gmail.com"></mu-text-field>
+        </mu-form-item>
+        <!--<mu-form-item class="mb-10"
                       label="密码：" label-float help-text="" prop="password" :rules="passwordRules">
           <mu-text-field type="password" v-model="validateForm.password" prop="password"></mu-text-field>
         </mu-form-item>
         <mu-form-item class="mb-10"
                       label="确认密码：" label-float help-text="" prop="password1" :rules="passwordRules1">
           <mu-text-field type="password" v-model="validateForm.password1" prop="password1"></mu-text-field>
-        </mu-form-item>
+        </mu-form-item>-->
         <mu-form-item class="mb-10"
                       prop="isAgree" :rules="argeeRules">
           <mu-checkbox label="同意用户协议" v-model="validateForm.isAgree"></mu-checkbox>
         </mu-form-item>
 
-        <mu-button class="mr-10 mb-10"
+        <!--<mu-button class="mr-10 mb-10"
           flat
           round
           color="primary"
           to="/">
           <mu-icon value="reply" size="16"></mu-icon>
           已有账号，返回登录
-        </mu-button>
+        </mu-button>-->
         <mu-button class="mr-10"
           full-width
           round
           color="primary"
-          @click="submit">
+          @click.native="submit">
           <mu-icon value="edit" size="16"></mu-icon>
           提交注册
         </mu-button>
@@ -60,11 +78,21 @@
   export default {
     data () {
       return {
-        usernameRules: [
-          {validate: (val) => !!val, message: '必须填写用户名'},
-          {validate: (val) => val.length > 3 && val.length < 10, message: '用户名长度大于3小于10'}
+        phoneRules: [
+          {validate: (val) => !!val, message: '必须填写手机号码'},
+          {validate: (val) => /^1[34578]\d{9}$/.test(val), message: '手机号码格式不正确'}
         ],
-        passwordRules: [
+        usernameRules: [
+          {validate: (val) => !!val, message: '必须填写姓名'}
+        ],
+        IDcardRules: [
+          {validate: (val) => !!val, message: '必须填写身份证号码'},
+          {validate: (val) => /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(val), message: '身份证号码格式不正确'}
+        ],
+        verifyCodeRules: [
+          {validate: (val) => !!val, message: '必须填写身份证号码'}
+        ],
+        /*passwordRules: [
           {validate: (val) => !!val, message: '必须填写密码'},
           {validate: (val) => val.length >= 3 && val.length <= 10, message: '用户名长度大于3小于10'}
         ],
@@ -72,12 +100,15 @@
           {validate: (val) => !!val, message: '必须填写密码'},
           {validate: (val) => val.length >= 3 && val.length <= 10, message: '密码长度大于3小于10'},
           {validate: (val) => val === this.validateForm.password, message: '两次密码输入不一致'}
-        ],
+        ],*/
         argeeRules: [{validate: (val) => !!val, message: '必须同意用户协议'}],
         validateForm: {
+          phone: '',
           username: '',
-          password: '',
-          password1: '',
+          IDcard: '',
+          verifyCode: '',
+          /*password: '',
+          password1: '',*/
           isAgree: true
         },
         tips:{
@@ -124,12 +155,19 @@
         })
       },
       clear () {
-        this.$refs.form.clear()
+        this.$refs.form.clear();
         this.validateForm = {
           username: '',
           password: '',
           isAgree: true
         }
+      },
+      getVerifyCode(){
+        this.$refs.form.validate().then(()=>{
+
+        }).catch(()=>{
+
+        });
       }
     }
   }
